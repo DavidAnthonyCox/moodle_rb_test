@@ -1,0 +1,1 @@
+# gem 'moodle_rb', :path =>'~/code/moodle-rb/moodle_rb-1.0.1a.gem'
