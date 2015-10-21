@@ -4,8 +4,8 @@ require 'moodle_rb'
 
 MoodleRb.verify
 
-# cfg = YAML.load(File.read("config.yaml"))
-# moodle = MoodleRb.new(cfg["token"], cfg["site"])
+cfg = YAML.load(File.read("config.yaml"))
+moodle = MoodleRb.new(cfg["token"], cfg["site"])
 
 # puts moodle.site_info
 
@@ -16,31 +16,37 @@ MoodleRb.verify
 
 # puts moodle.courses.enrolled_users(4)
 
-# my_students = []
-# moodle.courses.enrolled_users(4).map do |this_student| 
-#   my_students<<this_student["id"]
-# end
+my_students = []
+moodle.courses.enrolled_users(4).map do |this_student| 
+  my_students<<this_student["id"]
+end
 # puts "All Students: "
 # puts my_students
 
-# my_grades = moodle.grades.by_course(4,my_students)[0]["grades"]
-# my_grades.each do |g|
-#   puts "Student #" + g["userid"].to_s + " got " + g["str_grade"] + "% on the quiz."
-# end
+my_grades = moodle.grades.by_course(4,my_students)[0]["grades"]
+my_grades.each do |g|
+  puts "Student #" + g["userid"].to_s + " got " + g["str_grade"] + "% on the quiz."
+end
 
-# fails = []
-# my_grades.each do |this_grade|
-#   this_grade["str_grade"].to_f < 70.0 ? fails<<this_grade : next
-# end
+fails = []
+my_grades.each do |this_grade|
+  this_grade["str_grade"].to_f < 70.0 ? fails<<this_grade : next
+end
 # puts fails
 
-# fail_ids = fails.map do |f| 
-#   f["userid"]
-# end
+fail_transmission = []
+fails.each_index do |f_index| 
+  fail_transmission[f_index] = fails[f_index]
+  # puts fails[f_index]["userid"].class
+  fail_transmission[f_index][:touserid] = fails[f_index]["userid"]
+end
 # puts "Unfortunate Students: "
 # puts fail_ids
 
-# moodle.message.send_templated("some_haml", fail_ids)
+
+
+# moodle.message.send_templated("template.haml", fail_ids)
+moodle.message.send_templated("template.haml", fail_transmission)
 
 #TODO:
 =begin
